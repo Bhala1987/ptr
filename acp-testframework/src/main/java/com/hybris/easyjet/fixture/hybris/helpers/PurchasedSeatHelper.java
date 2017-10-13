@@ -1314,21 +1314,6 @@ public class PurchasedSeatHelper {
         passengerSeatChangeRequestBody = PurchasedSeatRequestBodyFactory.aMultiChangePurchasedSeat(newAssociationPassengerSeat);
     }
 
-    public void changePurchasedSeatAlreadyAllocated(SEATPRODUCTS seatTo, String passengerCode, String flightKey) throws EasyjetCompromisedException {
-        purchasedSeatPathParams = BasketPathParams.builder()
-                .basketId(getBasketCode())
-                .flightKey(flightKey)
-                .path(CHANGE_PURCHASED_SEAT)
-                .build();
-
-        newAssociationPassengerSeat = new HashMap();
-        List<Seat> allSeat = getAvailableSeats(seatTo);
-        PassengerSeatChangeRequests.Seat change = PassengerSeatChangeRequests.Seat.builder().price(Double.valueOf(allSeat.get(0).getPrice())).seatNumber(allSeat.get(0).getSeatNumber()).build();
-        newAssociationPassengerSeat.put(passengerCode, change);
-
-        passengerSeatChangeRequestBody = PurchasedSeatRequestBodyFactory.aMultiChangePurchasedSeat(newAssociationPassengerSeat);
-    }
-
     public void removeFieldFromRequestBody(String field, String typeOfRequest) {
         testData.setValidationScenarios(true);
         if ("basketId".equals(field)) {
@@ -1383,13 +1368,6 @@ public class PurchasedSeatHelper {
         String firstPassengerCode = passengerSeatChangeRequestBody.getPassengerSeatChangeRequests().get(0).getPassengerOnFlightId();
         String seatForPassenger = passengerSeatChangeRequestBody.getPassengerSeatChangeRequests().get(0).getSeat().getSeatNumber();
         initPriceChangePurchasedSeat(firstPassengerCode, seatForPassenger, getBasketCode());
-    }
-
-    public void invokeChangePurchasedSeat() throws EasyjetCompromisedException {
-        purchasedSeatService = serviceFactory.managePurchasedSeat(new PurchasedSeatRequest(HybrisHeaders.getValid(testData.getChannel()).build(),
-                purchasedSeatPathParams,
-                passengerSeatChangeRequestBody));
-        purchasedSeatService.invoke();
     }
 
     private void initPriceChangePurchasedSeat(String passengerCode, String seatForPassenger, String basketCode) throws EasyjetCompromisedException {

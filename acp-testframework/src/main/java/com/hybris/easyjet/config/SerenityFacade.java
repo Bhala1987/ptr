@@ -648,7 +648,6 @@ public final class SerenityFacade {
         FLIGHT_INVENTORY,
         FLIGHT_HOLD_ITEMS,
         REQUIRED_EJPLUS,
-        EJPLUS_MEMBERSHIPTYPE,
         FIELD,
         OLD_VALUE_FIELD,
         MEMBERSHIP_MODEL,

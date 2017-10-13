@@ -2,8 +2,6 @@ package feature.document;
 
 import com.hybris.easyjet.TestApplication;
 import com.hybris.easyjet.config.SerenityFacade;
-import com.hybris.easyjet.database.hybris.dao.MembershipDao;
-import com.hybris.easyjet.database.hybris.models.MemberShipModel;
 import com.hybris.easyjet.exceptions.EasyjetCompromisedException;
 import com.hybris.easyjet.fixture.hybris.helpers.*;
 import com.hybris.easyjet.fixture.hybris.helpers.PurchasedSeatHelper.SEATPRODUCTS;
@@ -34,7 +32,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.hybris.easyjet.config.SerenityFacade.DataKeys.*;
-import static com.hybris.easyjet.config.constants.CommonConstants.COMPLETED;
 import static com.hybris.easyjet.config.constants.CommonConstants.STANDARD;
 import static com.hybris.easyjet.fixture.WaitHelper.pollingLoop;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,10 +57,6 @@ public class AddPurchasedSeatSteps {
     private PurchasedSeatHelper purchasedSeatHelper;
     @Autowired
     private TravellerHelper travellerHelper;
-    @Autowired
-    private CustomerHelper customerHelper;
-    @Autowired
-    private MembershipDao membershipDao;
     private GetBookingService getBookingService;
 
     private List<Double> oldListOfPrices;
@@ -533,20 +526,6 @@ public class AddPurchasedSeatSteps {
         testData.setData(BASKET_SERVICE, basketHelper.getBasketService());
     }
 
-    @When("^I change the purchased seat (EXTRA_LEGROOM|UPFRONT|STANDARD) to the passenger")
-    public void iChangeThePurchasedSeatSeatProductToThePassenger(SEATPRODUCTS aSeatProduct) throws Throwable {
-
-        testData.setSeatProductInBasket(aSeatProduct);
-        basketHelper.invokeGetBasket(testData.getBasketId(), testData.getChannel());
-        Basket basket = basketHelper.getBasketService().getResponse().getBasket();
-        String passengerCodeWithSeat = basket.getOutbounds().stream().flatMap(f -> f.getFlights().stream()).flatMap(g -> g.getPassengers().stream()).filter(h -> Objects.nonNull(h.getSeat())).findFirst().orElse(null).getCode();
-        assertThat(Objects.nonNull(passengerCodeWithSeat))
-                .withFailMessage("No passengers with seat in basket")
-                .isTrue();
-        purchasedSeatHelper.changePurchasedSeatAlreadyAllocated(aSeatProduct, passengerCodeWithSeat, testData.getFlightKey());
-        purchasedSeatHelper.invokeChangePurchasedSeat();
-    }
-
     @And("^I have the basket updated to add purchased seat$")
     public void iHaveTheBasketUpdatedToAddPurchasedSeat() throws Throwable {
         basketHelper.invokeGetBasket(testData.getBasketId(), testData.getChannel());
@@ -589,95 +568,5 @@ public class AddPurchasedSeatSteps {
     @And("^the basket totals should be updated$")
     public void theBasketTotalsShouldBeUpdated() throws Throwable {
         basketHelper.getBasketService().assertThat().seatEntitlementBasedOnFareType();
-    }
-
-    @And("^the price of the seat should be correct$")
-    public void thePriceOfTheSeatShouldBeCorrect() throws Throwable {
-        testData.getSeatingServiceHelper();
-
-        if (testData.getSeatProductInBasket().toString().equalsIgnoreCase("EXTRA_LEGROOM") && testData.getData(EJPLUS_MEMBERSHIPTYPE).toString().equalsIgnoreCase("customer"))
-        {
-            assertThat(basketHelper.getBasketService().getResponse().getBasket().getOutbounds().stream()
-                    .map(AbstractFlights::getFlights)
-                    .flatMap(Collection::stream)
-                    .map(AbstractFlights.AbstractFoundFlight::getPassengers)
-                    .flatMap(Collection::stream)
-                    .allMatch(passenger -> passenger.getSeat().getPricing().getTotalAmountWithDebitCard().doubleValue() == testData.getSeatingServiceHelper().getResponse().getProducts().stream().filter(seat -> seat.getId().equalsIgnoreCase("1") && seat.getName().equalsIgnoreCase("Extra Legroom")).findFirst().get().getOfferPrices().getWithEJPlus().getStandard().getWithDebitCardFee().doubleValue())).withFailMessage("The passenger seat price is incorrect.").isTrue();
-        }
-        else if (testData.getSeatProductInBasket().toString().equalsIgnoreCase("UPFRONT") && testData.getData(EJPLUS_MEMBERSHIPTYPE).toString().equalsIgnoreCase("customer"))
-        {
-            assertThat(basketHelper.getBasketService().getResponse().getBasket().getOutbounds().stream()
-                    .map(AbstractFlights::getFlights)
-                    .flatMap(Collection::stream)
-                    .map(AbstractFlights.AbstractFoundFlight::getPassengers)
-                    .flatMap(Collection::stream)
-                    .allMatch(passenger -> passenger.getSeat().getPricing().getTotalAmountWithDebitCard().doubleValue() == testData.getSeatingServiceHelper().getResponse().getProducts().stream().filter(seat -> seat.getId().equalsIgnoreCase("2") && seat.getName().equalsIgnoreCase("Up Front")).findFirst().get().getOfferPrices().getWithEJPlus().getStandard().getWithDebitCardFee().doubleValue())).withFailMessage("The passenger seat price is incorrect.").isTrue();
-        }
-        else if (testData.getSeatProductInBasket().toString().equalsIgnoreCase("STANDARD") && testData.getData(EJPLUS_MEMBERSHIPTYPE).toString().equalsIgnoreCase("customer"))
-        {
-            assertThat(basketHelper.getBasketService().getResponse().getBasket().getOutbounds().stream()
-                    .map(AbstractFlights::getFlights)
-                    .flatMap(Collection::stream)
-                    .map(AbstractFlights.AbstractFoundFlight::getPassengers)
-                    .flatMap(Collection::stream)
-                    .allMatch(passenger -> passenger.getSeat().getPricing().getTotalAmountWithDebitCard().doubleValue() == testData.getSeatingServiceHelper().getResponse().getProducts().stream().filter(seat -> seat.getId().equalsIgnoreCase("3") && seat.getName().equalsIgnoreCase("Standard")).findFirst().get().getOfferPrices().getWithEJPlus().getStandard().getWithDebitCardFee().doubleValue())).withFailMessage("The passenger seat price is incorrect.").isTrue();
-        }
-        else if (testData.getSeatProductInBasket().toString().equalsIgnoreCase("EXTRA_LEGROOM") && testData.getData(EJPLUS_MEMBERSHIPTYPE).toString().equalsIgnoreCase("staff"))
-        {
-            assertThat(basketHelper.getBasketService().getResponse().getBasket().getOutbounds().stream()
-                    .map(AbstractFlights::getFlights)
-                    .flatMap(Collection::stream)
-                    .map(AbstractFlights.AbstractFoundFlight::getPassengers)
-                    .flatMap(Collection::stream)
-                    .allMatch(passenger -> passenger.getSeat().getPricing().getTotalAmountWithDebitCard().doubleValue() == (testData.getSeatingServiceHelper().getResponse().getProducts().stream().filter(seat -> seat.getId().equalsIgnoreCase("1") && seat.getName().equalsIgnoreCase("Extra Legroom")).findFirst().get().getOfferPrices().getWithEJPlus().getStaff().getWithDebitCardFee().doubleValue() - testData.getSeatingServiceHelper().getResponse().getProducts().stream().filter(seat -> seat.getId().equalsIgnoreCase("2") && seat.getName().equalsIgnoreCase("Up Front")).findFirst().get().getOfferPrices().getWithEJPlus().getStaff().getWithDebitCardFee().doubleValue()))).withFailMessage("The passenger seat price is incorrect.").isTrue();
-        }
-        else if (testData.getSeatProductInBasket().toString().equalsIgnoreCase("UPFRONT") && testData.getData(EJPLUS_MEMBERSHIPTYPE).toString().equalsIgnoreCase("staff"))
-        {
-            assertThat(basketHelper.getBasketService().getResponse().getBasket().getOutbounds().stream()
-                    .map(AbstractFlights::getFlights)
-                    .flatMap(Collection::stream)
-                    .map(AbstractFlights.AbstractFoundFlight::getPassengers)
-                    .flatMap(Collection::stream)
-                    .allMatch(passenger -> passenger.getSeat().getPricing().getTotalAmountWithDebitCard().doubleValue() == testData.getSeatingServiceHelper().getResponse().getProducts().stream().filter(seat -> seat.getId().equalsIgnoreCase("2") && seat.getName().equalsIgnoreCase("Up Front")).findFirst().get().getOfferPrices().getWithEJPlus().getStaff().getWithDebitCardFee().doubleValue())).withFailMessage("The passenger seat price is incorrect.").isTrue();
-        }
-        else if (testData.getSeatProductInBasket().toString().equalsIgnoreCase("STANDARD") && testData.getData(EJPLUS_MEMBERSHIPTYPE).toString().equalsIgnoreCase("staff"))
-        {
-            assertThat(basketHelper.getBasketService().getResponse().getBasket().getOutbounds().stream()
-                    .map(AbstractFlights::getFlights)
-                    .flatMap(Collection::stream)
-                    .map(AbstractFlights.AbstractFoundFlight::getPassengers)
-                    .flatMap(Collection::stream)
-                    .allMatch(passenger -> passenger.getSeat().getPricing().getTotalAmountWithDebitCard().doubleValue() == testData.getSeatingServiceHelper().getResponse().getProducts().stream().filter(seat -> seat.getId().equalsIgnoreCase("3") && seat.getName().equalsIgnoreCase("Standard")).findFirst().get().getOfferPrices().getWithEJPlus().getStaff().getWithDebitCardFee().doubleValue())).withFailMessage("The passenger seat price is incorrect.").isTrue();
-        }
-
-    }
-
-    @And("^I purchased a seat (.*) for ejPlus membership (.*) passenger (.*) for (.*) fare$")
-    public void iPurchasedASeatSeatProductForEjPlusMembershipEjPlusCardNumberPassengerPassengerForFareTypeFare(SEATPRODUCTS seatproducts, String ejPlusMembershipType, String passengerMix, String fareType) throws Throwable {
-
-        customerHelper.createCustomerAndLoginIt();
-        basketHelper.myBasketContainsAFlightWithPassengerMix(passengerMix, testData.getChannel(), fareType, false);
-
-        testData.setData(EJPLUS_MEMBERSHIPTYPE, ejPlusMembershipType);
-        MemberShipModel eJPlus = null;
-        Passengers updatePassengers = travellerHelper.createValidRequestToAddPassengersForBasket(basketHelper.getBasketService().getResponse());
-        if (ejPlusMembershipType.equalsIgnoreCase("customer")) {
-            eJPlus = membershipDao.getEJPlusMemberBasedOnStatus(COMPLETED);
-        } else if (ejPlusMembershipType.equalsIgnoreCase("staff")) {
-            eJPlus = membershipDao.getValidEJPlusMembershipForStaffWithStatus(COMPLETED);
-        }
-        updatePassengers.getPassengers().get(0).getPassengerDetails().getName().setLastName(eJPlus.getLastname());
-        updatePassengers.getPassengers().get(0).getPassengerDetails().setEjPlusCardNumber(eJPlus.getEjMemberShipNumber());
-        updatePassengers.getPassengers().get(0).setPassengerAPIS(null);
-
-        basketHelper.updatePassengersForChannel(updatePassengers, testData.getChannel(), basketHelper.getBasketService().getResponse()
-                .getBasket()
-                .getCode());
-
-        testData.setSeatProductInBasket(seatproducts);
-        purchasedSeatHelper.addPurchasedSeatToBasketForEachPassengerAndFlight(seatproducts, true);
-        purchasedSeatHelper.getPurchasedSeatService().getResponse();
-
-        basketHelper.getBasket(basketHelper.getBasketService().getResponse().getBasket().getCode());
     }
 }

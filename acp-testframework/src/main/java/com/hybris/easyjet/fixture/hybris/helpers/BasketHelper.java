@@ -1615,11 +1615,11 @@ public class BasketHelper {
 
         DecimalFormat df = new DecimalFormat("#.##");
 
-        Double totalDebitCardAmount_AmendedBasket = Double.valueOf(df.format(totalDebitCardAmountOnAmendedBasket + sumOfFareOfAllCancelledAddlSeats - cancellationFees));
-        Double totalCC_Amt = Double.valueOf(df.format(totalDebitCardAmountOnAmendedBasket + creditCardFees));
+        Double totalDebitCardAmount_AmendedBasket = Double.valueOf(df.format(totalDebitCardAmountOnAmendedBasket)) + Double.valueOf(df.format(sumOfFareOfAllCancelledAddlSeats - cancellationFees));
+        Double totalCC_Amt = Double.valueOf(df.format(totalDebitCardAmountOnAmendedBasket)) + Double.valueOf(df.format(creditCardFees));
 
-        assertThat(totalDebitCardAmountOnOriginalBasket.compareTo(totalDebitCardAmount_AmendedBasket)).isEqualTo(0);
-        assertThat(totalCreditCardAmountOnAmendedBasket.compareTo(totalCC_Amt)).isEqualTo(0);
+        assertThat(Double.valueOf(df.format(totalDebitCardAmountOnOriginalBasket)).compareTo(Double.valueOf(df.format(totalDebitCardAmount_AmendedBasket)))).isEqualTo(0);
+        assertThat(Double.valueOf(df.format(totalCreditCardAmountOnAmendedBasket)).compareTo(Double.valueOf(df.format(totalCC_Amt)))).isEqualTo(0);
     }
 
     private double checkTotalDebitCardAmount(Basket amendedBasket) {

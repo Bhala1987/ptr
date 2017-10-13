@@ -13,10 +13,7 @@ import org.fluttercode.datafactory.impl.DataFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.hybris.easyjet.config.constants.CommonConstants.*;
@@ -271,25 +268,43 @@ public class PurchasedSeatRequestBodyFactory {
     }
 
     private static List<Seat> getContinousSeatsInARow(List<Seat> aChosenSeat, int[] index) throws EasyjetCompromisedException {
-        skipCFSeats(aChosenSeat, index);
         Seat firstSeat = aChosenSeat.get(index[0]);
         index[0]++;
-        skipCFSeats(aChosenSeat, index);
         Seat secondSeat = aChosenSeat.get(index[0]);
 
-        if (checkIfTheAvailableSeatsAreConsecutive(firstSeat, secondSeat))
+        if (checkIfTheAvailableSeatsAreInARow(firstSeat, secondSeat) && checkIfTheSeatsInARowIsConsecutive(firstSeat, secondSeat))
             return Lists.newArrayList(firstSeat, secondSeat);
         else
             return getContinousSeatsInARow(aChosenSeat, index);
     }
 
-    private static boolean checkIfTheAvailableSeatsAreConsecutive(Seat firstSeat, Seat secondSeat) {
-        return firstSeat.getSeatNumber().substring(0, firstSeat.getSeatNumber().length() - 1).equals(secondSeat.getSeatNumber().substring(0, secondSeat.getSeatNumber().length() - 1));
+    private static boolean checkIfTheAvailableSeatsAreInARow(Seat firstSeat, Seat secondSeat) {
+        return getSeatNumber(firstSeat).equals(getSeatNumber(secondSeat));
     }
 
+    private static boolean checkIfTheSeatsInARowIsConsecutive(Seat firstSeat, Seat secondSeat) {
+        return getSeatAlphabet(secondSeat).equals(getTwoConsecutiveSeatMap().get(getSeatAlphabet(firstSeat)));
+    }
+
+    private static String getSeatNumber(Seat seat) {
+        return seat.getSeatNumber().substring(0, seat.getSeatNumber().length() - 1);
+    }
+
+    private static String getSeatAlphabet(Seat seat) {
+        return seat.getSeatNumber().substring(seat.getSeatNumber().length() - 1, seat.getSeatNumber().length());
+    }
+
+    private static Map<String, String> getTwoConsecutiveSeatMap() {
+        Map<String, String> combinationSeats = new HashMap<>();
+        combinationSeats.put("A", "B");
+        combinationSeats.put("B", "C");
+        combinationSeats.put("D", "E");
+        combinationSeats.put("E", "F");
+        return combinationSeats;
+    }
 
     private static void skipCFSeats(List<Seat> aChosenSeat, int[] index) throws EasyjetCompromisedException {
-        if(aChosenSeat.size()-1 < index[0])
+        if (aChosenSeat.size() - 1 < index[0])
             throw new EasyjetCompromisedException(INSUFFICIENT_DATA);
 
         if (aChosenSeat.get(index[0]).getSeatNumber().contains("C") ||

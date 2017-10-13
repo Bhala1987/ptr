@@ -69,3 +69,16 @@
         | Arrival Airport                           |
         | Disruption Level                          |
         | Disruption Reason                         |
+
+    @FCPH-10800 @manual
+    Scenario: Return disruption level on the related booking
+      Given a disruption is set against a flight on a related booking
+      When I send the getAdvancedCustomerProfile request
+      Then I will return additional information to the channel
+
+    @FCPH-10800 @manual
+    Scenario: Return disruption level on a booking
+      Given a disruption is set against a flight on a related booking
+      When I send the getBookingSummaries request
+      Then I will return the disruption level against the flight
+

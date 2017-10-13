@@ -2,7 +2,6 @@ package com.hybris.easyjet.fixture.hybris.helpers;
 
 import com.hybris.easyjet.config.SerenityFacade;
 import com.hybris.easyjet.config.constants.CommonConstants;
-import com.hybris.easyjet.database.hybris.dao.MembershipDao;
 import com.hybris.easyjet.database.hybris.models.DealModel;
 import com.hybris.easyjet.database.hybris.models.MemberShipModel;
 import com.hybris.easyjet.exceptions.EasyjetCompromisedException;
@@ -90,8 +89,6 @@ public class BookingHelper {
     private PurchasedSeatHelper purchasedSeatHelper;
     @Autowired
     private SavedPassengerHelper savedPassengerHelper;
-    @Autowired
-    private MembershipDao membershipDao;
 
     private final HybrisServiceFactory serviceFactory;
     private final TravellerHelper travellerHelper;

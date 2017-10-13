@@ -2296,5 +2296,6 @@ public class CommitBookingSteps {
         bookingConfirmationResponse = bookingHelper.createNewBooking(bookingHelper.createNewBookingRequestForChannelBasedOnBasket(basketHelper.getBasketService().getResponse(), testData.getData(CUSTOMER_ID), testData.getChannel(), true));
         String bookingRef = bookingConfirmationResponse.getBookingConfirmation().getBookingReference();
         testData.setData(BOOKING_ID, bookingRef);
+
     }
 }

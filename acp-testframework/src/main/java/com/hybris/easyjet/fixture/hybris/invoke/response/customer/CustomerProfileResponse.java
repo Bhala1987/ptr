@@ -118,6 +118,7 @@ public class CustomerProfileResponse extends Response {
         private String outboundDepartureDate;
         private String currency;
         private String totalAmount;
+        private Boolean isDisrupted;
     }
 
     @Getter

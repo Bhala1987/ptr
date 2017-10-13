@@ -1052,7 +1052,7 @@ public class ManualSteps {
     public void theDisruptionReasonIsSetAgainstTheFlight() {
     }
 
-    @Given("^a disruption is set against a flight$")
+    @Given("^a disruption is set against a flight( on a related booking)?$")
     public void aDisruptionIsSetAgainstAFlight() {
     }
 
@@ -1215,4 +1215,19 @@ public class ManualSteps {
     public void iSendTheEmailTheRequestedEmailAddress() {
     }
 
+    @When("^I send the getAdvancedCustomerProfile request$")
+    public void iSendTheGetAdvancedCustomerProfileRequest() {
+    }
+
+    @Then("^I will return additional information to the channel$")
+    public void iWillReturnAdditionalInformationToTheChannel() {
+    }
+
+    @When("^I send the getBookingSummaries request$")
+    public void iSendTheGetBookingSummariesRequest() {
+    }
+
+    @Then("^I will return the disruption level against the flight$")
+    public void iWillReturnTheDisruptionLevelAgainstTheFlight() {
+    }
 }
