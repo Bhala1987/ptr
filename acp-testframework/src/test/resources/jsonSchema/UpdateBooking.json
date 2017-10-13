@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "urn:jsonschema:com:ej:booking:UpdateBooking",
+  "type": "object",
+  "properties": {
+    "header": {
+      "$ref": "#/definitions/Header"
+    },
+    "body": {
+      "$ref": "#/definitions/Body"
+    }
+  },
+  "required": [
+    "header",
+    "body"
+  ],
+  "definitions": {
+    "Header": {
+      "type": "object",
+      "description": "See http://conf.europe.easyjet.local/display/EI/Message+Headers",
+      "properties": {
+        "messageName": {
+          "type": "string",
+          "description": "Message Name"
+        },
+        "messageVersion": {
+          "type": "string",
+          "description": "Message Version"
+        },
+        "messageGenerationTimestamp": {
+          "type": "string",
+          "description": "Generated Timestamp, ex. 2016-12-13T12:12:12Z "
+        },
+        "messageProducerName": {
+          "type": "string",
+          "description": "Producer Name"
+        },
+        "operationType": {
+          "type": "string",
+          "description": "Operation Type. Possible value is UPDATE"
+        }
+      },
+      "required": [
+        "messageName",
+        "messageVersion",
+        "messageGenerationTimestamp",
+        "messageProducerName",
+        "operationType"
+      ]
+    },
+    "Body": {
+      "$ref": "#/definitions/BookingUpdated"
+    },
+    "BookingUpdated": {
+      "type": "object",
+      "description": "The root of a booking updated context",
+      "required": [
+        "bookingReference",
+        "bookingVersion",
+        "bookingDateTime",
+        "bookingUpdateDateTime",
+        "bookingLanguage",
+        "bookingStatus",
+        "bookingCurrency",
+        "operations"
+      ],
+      "properties": {
+        "bookingReference": {
+          "type": "string",
+          "description": "Reference for the booking obtained from eRes",
+          "example": "ELXS2BT"
+        },
+        "bookingVersion": {
+          "type": "integer",
+          "description": "Current booking version in hybris.",
+          "example": 1
+        },
+        "bookingDateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Booking creation date/time. ISO 8601 Date-Time Format (YYYY-MM-DDTHH:MM:SS)",
+          "example": "2016-10-27T12:26:00"
+        },
+        "bookingUpdateDateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Booking updated date/time. ISO 8601 Date-Time Format (YYYY-MM-DDTHH:MM:SS)",
+          "example": "2016-10-29T09:30:00"
+        },
+        "bookingLanguage": {
+          "type": "string",
+          "description": "Booking ISO code language as defined in hybris reference data.",
+          "example": "en_GB"
+        },
+        "bookingStatus": {
+          "type": "string",
+          "example": "COMPLETE",
+          "description": "Booking status code as defined in hybris reference data."
+        },
+        "bookingCurrency": {
+          "type": "string",
+          "description": "Booking currency ISO code as defined in hybris ACP.",
+          "example": "GBP"
+        },
+        "operations": {
+          "type": "array",
+          "description": "The booking delta of changes based on the comparison of two full booking JSON schemas representing the booking current version (N) and its previous version (N-1) in hybris ACP",
+          "items": {
+            "$ref": "#/definitions/Operation"
+          }
+        }
+      }
+    },
+    "Operation": {
+      "type": "object",
+      "required": [
+        "op",
+        "path"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Path"
+        }
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "op": {
+              "description": "The operation to perform.",
+              "type": "string",
+              "enum": [
+                "add",
+                "replace",
+                "test",
+                "copy"
+              ]
+            },
+            "value": {
+              "description": "The value to add, replace or test."
+            }
+          }
+        },
+        {
+          "properties": {
+            "op": {
+              "description": "The operation to perform.",
+              "type": "string",
+              "enum": [
+                "remove"
+              ]
+            }
+          }
+        },
+        {
+          "required": [
+            "from"
+          ],
+          "properties": {
+            "op": {
+              "description": "The operation to perform.",
+              "type": "string",
+              "enum": [
+                "move",
+                "copy"
+              ]
+            },
+            "from": {
+              "description": "A JSON Pointer path pointing to the location to move/copy from.",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Path": {
+      "properties": {
+        "path": {
+          "description": "A JSON Pointer path.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

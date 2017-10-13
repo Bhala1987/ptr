@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "urn:jsonschema:com:ej:booking:BookingCancelled",
+  "type": "object",
+  "properties": {
+    "header": {
+      "$ref": "#/definitions/Header"
+    },
+    "body": {
+      "$ref": "#/definitions/Body"
+    }
+  },
+  "required": [
+    "header",
+    "body"
+  ],
+  "definitions": {
+    "Header": {
+      "type": "object",
+      "description": "See http://conf.europe.easyjet.local/display/EI/Message+Headers",
+      "properties": {
+        "messageName": {
+          "type": "string",
+          "description": "Message Name"
+        },
+        "messageVersion": {
+          "type": "string",
+          "description": "Message Version"
+        },
+        "messageGenerationTimestamp": {
+          "type": "string",
+          "description": "Generated Timestamp, ex. 2016-12-13T12:12:12Z "
+        },
+        "messageProducerName": {
+          "type": "string",
+          "description": "Producer Name"
+        },
+        "operationType": {
+          "type": "string",
+          "description": "Operation Type. Possible value is UPDATE"
+        }
+      },
+      "required": [
+        "messageName",
+        "messageVersion",
+        "messageGenerationTimestamp",
+        "messageProducerName",
+        "operationType"
+      ]
+    },
+    "Body": {
+      "$ref": "#/definitions/BookingCancelled"
+    },
+    "BookingCancelled": {
+      "type": "object",
+      "required": [
+        "bookingReference",
+        "bookingStatus",
+        "cancellationDateTime",
+        "isVisible",
+        "transactions"
+      ],
+      "properties": {
+        "bookingReference": {
+          "type": "string",
+          "description": "Booking unique reference number cancelled in hybris",
+          "example": "ELXS2BT"
+        },
+        "bookingStatus": {
+          "type": "string",
+          "description": "Booking current status in hybris",
+          "example": "CANCELLED"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The agent or customer name responsible for the cancellation request",
+          "example": "Emma Moore"
+        },
+        "cancellationDateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "The booking cancellation timestamp. ISO 8601 Date Format (YYYY-MM-DDTHH:MM:SS)",
+          "example": "2017-08-16T18:07:00"
+        },
+        "isVisible": {
+          "type": "boolean",
+          "description": "Indicates if the cancellation should be visible to the client on the legacy web",
+          "example": true
+        },
+        "comment": {
+          "type": "string",
+          "description": "The booking cancellation comment",
+          "example": "Some comment..."
+        },
+        "transactions": {
+          "type": "array",
+          "description": "Applicable booking payment closing transactions based on the JSON Patch format",
+          "items": {
+            "$ref": "#/definitions/Operation"
+          }
+        }
+      }
+    },
+    "Operation": {
+      "type": "object",
+      "required": [
+        "op",
+        "path"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Path"
+        }
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "op": {
+              "description": "The operation to perform.",
+              "type": "string",
+              "enum": [
+                "add",
+                "replace",
+                "test"
+              ]
+            },
+            "value": {
+              "description": "The value to add, replace or test."
+            }
+          }
+        },
+        {
+          "properties": {
+            "op": {
+              "description": "The operation to perform.",
+              "type": "string",
+              "enum": [
+                "remove"
+              ]
+            }
+          }
+        },
+        {
+          "required": [
+            "from"
+          ],
+          "properties": {
+            "op": {
+              "description": "The operation to perform.",
+              "type": "string",
+              "enum": [
+                "move",
+                "copy"
+              ]
+            },
+            "from": {
+              "description": "A JSON Pointer path pointing to the location to move/copy from.",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Path": {
+      "properties": {
+        "path": {
+          "description": "A JSON Pointer path.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

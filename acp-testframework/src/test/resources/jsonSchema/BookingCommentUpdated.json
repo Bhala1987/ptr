@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "urn:jsonschema:com:ej:booking:BookingCommentUpdatedEvent",
+  "type": "object",
+  "properties": {
+    "header": {
+      "$ref": "#/definitions/Header"
+    },
+    "body": {
+      "$ref": "#/definitions/Body"
+    }
+  },
+  "required": [
+    "header",
+    "body"
+  ],
+  "definitions": {
+    "Header": {
+      "type": "object",
+      "description": "See http://conf.europe.easyjet.local/display/EI/Message+Headers",
+      "properties": {
+        "messageName": {
+          "type": "string",
+          "description": "Message Name"
+        },
+        "messageVersion": {
+          "type": "string",
+          "description": "Message Version"
+        },
+        "messageGenerationTimestamp": {
+          "type": "string",
+          "description": "Generated Timestamp, ex. 2016-12-13T12:12:12Z "
+        },
+        "messageProducerName": {
+          "type": "string",
+          "description": "Producer Name"
+        },
+        "operationType": {
+          "type": "string",
+          "description": "Operation Type. Possible value is UPDATE"
+        }
+      },
+      "required": [
+        "messageName",
+        "messageVersion",
+        "messageGenerationTimestamp",
+        "messageProducerName",
+        "operationType"
+      ]
+    },
+    "Body": {
+      "$ref": "#/definitions/BookingCommentUpdate"
+    },
+    "BookingCommentUpdate": {
+      "type": "object",
+      "required":["bookingReference","commentCode"],
+      "properties": {
+        "bookingReference": {
+          "type": "string",
+          "description": "Booking unique reference number originally obtained from eRes",
+          "example": "ELXS2BT"
+        },
+        "commentCode": {
+          "type": "string",
+          "description": "Comment code that identifies the comment on the booking.\n",
+          "example": "930033"
+        },
+        "comment": {
+          "type": "string",
+          "description": "The text of the comment \n",
+          "example": "This is a comment."
+        }
+      }
+    }
+  }
+}

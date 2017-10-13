@@ -1,0 +1,1531 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "urn:jsonschema:com:ej:booking:Booking",
+  "type": "object",
+  "properties": {
+    "header": {
+      "$ref": "#/definitions/Header"
+    },
+    "body": {
+      "$ref": "#/definitions/Body"
+    }
+  },
+  "required": [
+    "header",
+    "body"
+  ],
+  "definitions": {
+    "Header": {
+      "type": "object",
+      "description": "See http://conf.europe.easyjet.local/display/EI/Message+Headers",
+      "properties": {
+        "messageName": {
+          "type": "string",
+          "description": "Message Name"
+        },
+        "messageVersion": {
+          "type": "string",
+          "description": "Message Version"
+        },
+        "messageGenerationTimestamp": {
+          "type": "string",
+          "description": "Generated Timestamp, ex. 2016-12-13T12:12:12Z "
+        },
+        "messageProducerName": {
+          "type": "string",
+          "description": "Producer Name"
+        },
+        "operationType": {
+          "type": "string",
+          "description": "Operation Type. Possible values are CREATE/UPDATE/DELETE"
+        }
+      },
+      "required": [
+        "messageName",
+        "messageVersion",
+        "messageGenerationTimestamp",
+        "messageProducerName",
+        "operationType"
+      ]
+    },
+    "Body": {
+      "$ref": "#/definitions/Booking"
+    },
+    "Booking": {
+      "type": "object",
+      "description": "The root of the booking",
+      "properties": {
+        "bookingReference": {
+          "type": "string",
+          "description": "Reference for the booking obtained from eRes",
+          "example": "ELXS2BT"
+        },
+        "bookingDateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Booking creation date. ISO 8601 Date-Time Format (YYYY-MM-DDTHH:MM:SS)\n",
+          "example": "2016-10-27T12:26:00"
+        },
+        "bookingLanguage": {
+          "type": "string",
+          "description": "Booking ISO code language as defined in hybris reference data.\n",
+          "example": "en_GB"
+        },
+        "defaultCardType": {
+          "type": "string",
+          "example": "CREDIT",
+          "description": "Booking card type code as defined in hybris.\n"
+        },
+        "bookingStatus": {
+          "type": "string",
+          "example": "COMPLETE",
+          "description": "Booking status code as defined in hybris reference data.\n"
+        },
+        "bookingType": {
+          "type": "string",
+          "example": "STANDARD_CUSTOMER",
+          "description": "Booking type code as defined in hybris reference data.\n"
+        },
+        "bookingReason": {
+          "type": "string",
+          "description": "The reason code associated with the booking as defined in hybris reference data.",
+          "example": "LEISURE"
+        },
+        "bookingCurrency": {
+          "$ref": "#/definitions/Currency"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Identifier for the channel through which the booking is made as defined in hybris.",
+          "example": "WEB"
+        },
+        "employeeNumber": {
+          "type": "string",
+          "description": "EasyJet employee identifier. Mandatory for staff booking.",
+          "example": "123456"
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Customer service agent identifier. Mandatory for agent desktop booking",
+          "example": "00767554"
+        },
+        "outbounds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Journey"
+          },
+          "description": "The outbound flights that are part of the booking. At least 1 required"
+        },
+        "inbounds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Journey"
+          },
+          "description": "The inbound flights that are part of the booking."
+        },
+        "corporateDetails": {
+          "$ref": "#/definitions/Corporate"
+        },
+        "carHires": {
+          "type": "array",
+          "description": "The car hire products on this booking",
+          "items": {
+            "$ref": "#/definitions/CarHire"
+          }
+        },
+        "travelInsurances": {
+          "type": "array",
+          "description": "The traval insurance products on this booking",
+          "items": {
+            "$ref": "#/definitions/TravelInsurance"
+          }
+        },
+        "hotels": {
+          "type": "array",
+          "description": "The hotels booked as part of this booking",
+          "items": {
+            "$ref": "#/definitions/Hotel"
+          }
+        },
+        "payments": {
+          "type": "array",
+          "description": "Payment transactions associated with the booking",
+          "items": {
+            "$ref": "#/definitions/Payment"
+          }
+        },
+        "bookingContact": {
+          "$ref": "#/definitions/Customer"
+        },
+        "otherBookingInfo": {
+          "type": "array",
+          "description": "The hotels booked as part of this booking",
+          "items": {
+            "$ref": "#/definitions/OtherInfo"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "A list of booking comments",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        },
+        "priceSummary": {
+          "$ref": "#/definitions/Pricing"
+        }
+      },
+      "required": [
+        "bookingReference",
+        "bookingDateTime",
+        "bookingStatus",
+        "bookingType",
+        "bookingReason",
+        "bookingCurrency",
+        "outbounds",
+        "bookingContact",
+        "priceSummary"
+      ]
+    },
+    "Currency": {
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "symbol",
+        "decimalPlaces"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Currency code masted in Hybris(ACP).\n",
+          "example": "GBP"
+        },
+        "name": {
+          "type": "string",
+          "description": "Currency name based on the booking language.\n",
+          "example": "British Pound"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Currency International symbol.\n",
+          "example": "£"
+        },
+        "decimalPlaces": {
+          "type": "integer",
+          "description": "Number of decimal places.\n",
+          "example": "2"
+        }
+      }
+    },
+    "Journey": {
+      "type": "object",
+      "description": "A booking jouney",
+      "properties": {
+        "isDirect": {
+          "type": "boolean",
+          "description": "Flag that indicates whether the journey has direct or indirect flights."
+        },
+        "totalDuration": {
+          "type": "string",
+          "description": "Indicates the total journey's duration from departure airport to arrival airport.\n",
+          "example": "2h30m"
+        },
+        "stops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Indicates how many stop the journey holds.\n"
+        },
+        "flights": {
+          "type": "array",
+          "description": "The flights that are part of direct / indirect route",
+          "items": {
+            "$ref": "#/definitions/Flight"
+          }
+        }
+      },
+      "required": [
+        "isDirect",
+        "flights"
+      ]
+    },
+    "Flight": {
+      "type": "object",
+      "description": "A single flight on the booking",
+      "properties": {
+        "flightKey": {
+          "type": "string",
+          "description": "Unique identifier for the flight flying at specific time.\n",
+          "example": "20121024LISFNC7609"
+        },
+        "flightNumber": {
+          "type": "string",
+          "description": "Flight number identifier as provided by easyJet.\n",
+          "example": "EZY1244"
+        },
+        "carrier": {
+          "type": "string",
+          "description": "Identifier of the travel company who provides the flight.\n",
+          "example": "EZY"
+        },
+        "departureDateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Date and time on which a flight departure.\n",
+          "example": "Wed 21-Sep-2016 20-40-00"
+        },
+        "arrivalDateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Date and time on which a flight departure.\n",
+          "example": "Wed 21-Sep-2016 23-00-00"
+        },
+        "operationalStatus": {
+          "description": "The flight operational status as defined in hybris reference data.",
+          "type": "string",
+          "example": "ON_TIME"
+        },
+        "sector": {
+          "$ref": "#/definitions/Sector"
+        },
+        "passengers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Passenger"
+          },
+          "description": "The Passengers on this Flight. At least 1 required"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Flags whether a basket/booking line entry is active",
+          "example": true
+        },
+        "entryStatus": {
+          "type": "string",
+          "description": "Entry status in the current version of the booking in relation to the previous booking version",
+          "enum": [
+            "SAME",
+            "NEW",
+            "CHANGED"
+          ]
+        }
+      },
+      "required": [
+        "flightKey",
+        "flightNumber",
+        "carrier",
+        "departureDateTime",
+        "arrivalDateTime",
+        "operationalStatus",
+        "sector",
+        "passengers"
+      ]
+    },
+    "Sector": {
+      "type": "object",
+      "required": [
+        "code",
+        "departure",
+        "arrival",
+        "apisRequired",
+        "nifNumberRequired",
+        "checkInWindow"
+      ],
+      "description": "A sector represents the smallest segment of a journey. A sector is described by two airports.\n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Sector unique identifier.\n",
+          "example": "LTNBCN"
+        },
+        "departure": {
+          "$ref": "#/definitions/AirportDetails"
+        },
+        "arrival": {
+          "$ref": "#/definitions/AirportDetails"
+        },
+        "apisRequired": {
+          "type": "boolean",
+          "description": "Flag whether APIS is required for the sector.\n"
+        },
+        "nifNumberRequired": {
+          "type": "boolean",
+          "description": "Flag whether NIF Number is required for the sector.\n"
+        },
+        "checkInWindow": {
+          "$ref": "#/definitions/CheckInWindow"
+        }
+      }
+    },
+    "CheckInWindow": {
+      "type": "object",
+      "description": "A single flight on the booking",
+      "properties": {
+        "opening": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Indicates a check-in opening time. ISO 8601 Date-Time Format (YYYY-MM-DDTHH:MM:SS)\n",
+          "example": "2016-08-21:00:00:00"
+        },
+        "closing": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Indicates a check-in closing time. ISO 8601 Date-Time Format (YYYY-MM-DDTHH:MM:SS)\n",
+          "example": "2016-09-21:16:00:00"
+        },
+        "isOpen": {
+          "type": "boolean",
+          "description": "Indicates whether the check-in operation is open as calculated by hybris ACP.\n",
+          "example": true
+        }
+      },
+      "required": [
+        "opening",
+        "closing",
+        "isOpen"
+      ]
+    },
+    "AirportDetails": {
+      "type": "object",
+      "required": [
+        "code",
+        "name"
+      ],
+      "description": "Airport representation that holds airport details.\n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Airport IATA (International Air Transport Association) identifier.\n",
+          "example": "LTN"
+        },
+        "name": {
+          "type": "string",
+          "description": "Airport name to be displayed.\n",
+          "example": "Luton Airport"
+        },
+        "terminal": {
+          "type": "string",
+          "description": "Airport terminal code in which the related flight is scheduled.\n",
+          "example": "T1"
+        }
+      }
+    },
+    "Passenger": {
+      "type": "object",
+      "description": "A passenger on this flight",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Passenger unique identifier.\n",
+          "example": "87654325"
+        },
+        "toeiCode": {
+          "type": "string",
+          "description": "Unique identifier of a booking entry related to the given passenger. \"TOEI\" stands for \"Travel Order Entry Info\".\n",
+          "example": "256787654"
+        },
+        "passengerDetails": {
+          "$ref": "#/definitions/PassengerDetails"
+        },
+        "passengerStatus": {
+          "type": "string",
+          "description": "The passenger current status as defined in hybris reference data.",
+          "example": "BOOKED"
+        },
+        "ICTSStatus": {
+          "type": "string",
+          "description": "The passenger status as provided by ICTS",
+          "example": "GREEN"
+        },
+        "boardingPassStatus": {
+          "type": "string",
+          "description": "The passenger current boarding pass status as defined in hybris reference data.",
+          "example": "NEVER_RETRIEVED"
+        },
+        "infantsOnLap": {
+          "type": "array",
+          "description": "A list of infant passenger codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "infantsOnSeat": {
+          "type": "array",
+          "description": "A list of infant passenger codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "age": {
+          "type": "integer",
+          "description": "The Passenger age in years when the outbound flight departs",
+          "example": 34
+        },
+        "lead": {
+          "type": "boolean",
+          "description": "Indicates if this passenger is the lead passenger on the booking"
+        },
+        "fareType": {
+          "type": "string",
+          "description": "Passenger fare type as defined in hybris referece data.\n",
+          "example": "STANDARD"
+        },
+        "allocatedFareClass": {
+          "type": "string",
+          "description": "The fare class allocated to the passenger when inventory was allocated pre-booking",
+          "example": "A"
+        },
+        "passengerMap": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "List of passengerIds that represents the same passenger"
+          }
+        },
+        "fareProduct": {
+          "$ref": "#/definitions/Item"
+        },
+        "holdItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HoldItem"
+          },
+          "description": "List of hold items associated to the passenger.\n"
+        },
+        "cabinItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CabinBag"
+          },
+          "description": "List of cabin items associated to the passenger.\n"
+        },
+        "additionalItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          },
+          "description": "List of additional items associated to the passenger.\n"
+        },
+        "seat": {
+          "$ref": "#/definitions/Seat"
+        },
+        "additionalSeats": {
+          "type": "array",
+          "description": "A list of additional seats.\n",
+          "items": {
+            "$ref": "#/definitions/AdditionalSeat"
+          }
+        },
+        "passengerAPIS": {
+          "$ref": "#/definitions/APIS"
+        },
+        "specialRequests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SpecialRequestDetails"
+          },
+          "description": "List of special requests associated to the passenger.\n"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Flags whether a basket/booking line entry is active",
+          "example": true
+        },
+        "entryStatus": {
+          "type": "string",
+          "description": "Entry status in the current version of the booking in relation to the previous booking version",
+          "enum": [
+            "SAME",
+            "NEW",
+            "CHANGED"
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "toeiCode",
+        "passengerDetails"
+      ]
+    },
+    "PassengerDetails": {
+      "type": "object",
+      "required": [
+        "name",
+        "passengerType"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/Name"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Passenger phone number.\n",
+          "example": "00447456789098"
+        },
+        "email": {
+          "type": "string",
+          "description": "Passenger email address.\n",
+          "example": "j.smith@some_email.com"
+        },
+        "passengerType": {
+          "type": "string",
+          "description": "Passenger type as defined in hybris referece data.\n",
+          "example": "ADULT"
+        },
+        "nifNumber": {
+          "type": "string",
+          "description": "Portuguese passenger NIF number provided.\n",
+          "example": "123456"
+        },
+        "ejPlusCardNumber": {
+          "type": "string",
+          "description": "Passenger easyJet Plus Card number provided.\n",
+          "example": "8675645"
+        }
+      }
+    },
+    "SpecialRequestDetails": {
+      "type": "object",
+      "required": [
+        "ssrs"
+      ],
+      "description": "Special Services requested by a Passenger\n",
+      "properties": {
+        "ssrs": {
+          "type": "array",
+          "description": "List of special service requests\n",
+          "items": {
+            "$ref": "#/definitions/SSR"
+          }
+        },
+        "remarks": {
+          "type": "array",
+          "description": "List of special service remarks\n",
+          "items": {
+            "$ref": "#/definitions/SSRRemark"
+          }
+        }
+      }
+    },
+    "SSR": {
+      "type": "object",
+      "description": "A service request made by the passenger for this flight",
+      "properties": {
+        "ssrCode": {
+          "type": "string",
+          "description": "The service request code."
+        },
+        "ssrDescription": {
+          "type": "string",
+          "description": "The service request description."
+        }
+      },
+      "required": [
+        "ssrCode"
+      ]
+    },
+    "SSRRemark": {
+      "type": "object",
+      "description": "Remark provided by the user against an SSR",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code defined in hybris for a remark."
+        },
+        "name": {
+          "type": "string",
+          "description": "The description/comment for the remark code."
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "description": "Generic object which represents a product item in the basket.",
+      "required": [
+        "type",
+        "code",
+        "name",
+        "quantity",
+        "pricing"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Product type code managed in hybris.\n",
+          "example": "FARE_PRODUCT"
+        },
+        "bundleCode": {
+          "type": "string",
+          "description": "Refers to a product bundle code, if item is bundled.\n"
+        },
+        "code": {
+          "type": "string",
+          "description": "Item product code.\n"
+        },
+        "name": {
+          "type": "string",
+          "description": "Item name to be displayed.\n"
+        },
+        "description": {
+          "type": "string",
+          "description": "Item localized description to be displayed.\n"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Item total combined quantity.\n",
+          "example": 1
+        },
+        "pricing": {
+          "$ref": "#/definitions/Pricing"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Flags whether a basket/booking line entry is active",
+          "example": true
+        },
+        "entryStatus": {
+          "type": "string",
+          "description": "Entry status in the current version of the booking in relation to the previous booking version",
+          "enum": [
+            "SAME",
+            "NEW",
+            "CHANGED"
+          ]
+        }
+      }
+    },
+    "Seat": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Item"
+        },
+        {
+          "properties": {
+            "seatNumber": {
+              "type": "string",
+              "description": "The seat number of the seat on the aircraft",
+              "example": "1A"
+            },
+            "seatBand": {
+              "type": "string",
+              "description": "The seat band associated with the seat and is provided by seating service",
+              "example": "UPFRONT"
+            },
+            "seatCharacteristics": {
+              "type": "array",
+              "description": "Additional seat information provided by Seating Service ",
+              "items": {
+                "type": "string",
+                "example": "WINDOW"
+              }
+            },
+            "allocatedFareClass": {
+              "type": "string",
+              "description": "The fare class allocated to the seat. Mandatory for additional seats only.",
+              "example": "L"
+            }
+          }
+        }
+      ]
+    },
+    "AdditionalSeat": {
+      "type": "object",
+      "properties": {
+        "fareProduct": {
+          "$ref": "#/definitions/Item"
+        },
+        "seat": {
+          "$ref": "#/definitions/Seat"
+        },
+        "seatReasonCode": {
+          "type": "string",
+          "description": "The reason code associated with the additional seat as defined in hybris ACP",
+          "example": "OBJECT"
+        }
+      }
+    },
+    "HoldItem": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Item"
+        },
+        {
+          "properties": {
+            "maxlength": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for hold item",
+              "example": 56
+            },
+            "maxWidth": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for hold item",
+              "example": 45
+            },
+            "maxHeight": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for hold item",
+              "example": 25
+            },
+            "maxWeight": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for hold item",
+              "example": 32
+            },
+            "extraWeight": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ExtraWeight"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ExtraWeight": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Item"
+        },
+        {
+          "properties": {
+            "maxWeight": {
+              "type": "number",
+              "format": "double",
+              "description": "The actual purchased extra weight in kilos",
+              "example": 3
+            }
+          }
+        }
+      ]
+    },
+    "CabinBag": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Item"
+        },
+        {
+          "properties": {
+            "maxLength": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for cabin bag",
+              "example": 56
+            },
+            "maxWidth": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for cabin bag",
+              "example": 45
+            },
+            "maxHeight": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for cabin bag",
+              "example": 25
+            },
+            "maxWeight": {
+              "type": "number",
+              "format": "double",
+              "description": "Dimension attribute for cabin bag",
+              "example": 32
+            }
+          }
+        }
+      ]
+    },
+    "Pricing": {
+      "type": "object",
+      "properties": {
+        "basePrice": {
+          "type": "number",
+          "format": "double",
+          "description": "Item base price.\n",
+          "example": "100.00"
+        },
+        "taxes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChargeType"
+          }
+        },
+        "fees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChargeType"
+          }
+        },
+        "discounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChargeType"
+          }
+        },
+        "totalAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Total price for credit card type.\n",
+          "example": "103.00"
+        },
+        "markupAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Markup amount.\n",
+          "example": "103.00"
+        },
+        "markupPercentage": {
+          "type": "number",
+          "format": "double",
+          "description": "Markup percentage.\n",
+          "example": "10"
+        }
+      }
+    },
+    "Customer": {
+      "type": "object",
+      "description": "Contact details of the customer related to the booking",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "description": "Customer identifier for which the booking belongs to.",
+          "example": "00076333"
+        },
+        "name": {
+          "$ref": "#/definitions/Name"
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "emailAddress": {
+          "type": "string",
+          "example": "john.smith@some_email.com"
+        },
+        "phone": {
+          "type": "string",
+          "example": "0754343433"
+        }
+      },
+      "required": [
+        "customerId",
+        "name",
+        "emailAddress"
+      ]
+    },
+    "Address": {
+      "type": "object",
+      "description": "Represents a complete address location.\n",
+      "properties": {
+        "addressLine1": {
+          "type": "string",
+          "description": "The address line 1\n",
+          "example": "52, Main Street"
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "The address line 2\n",
+          "example": "Flat 2B"
+        },
+        "addressLine3": {
+          "type": "string",
+          "description": "The address line 3\n",
+          "example": ""
+        },
+        "city": {
+          "type": "string",
+          "description": "City or town for the address",
+          "example": "Oxford"
+        },
+        "county_state": {
+          "type": "string",
+          "description": "County or State for the address",
+          "example": "Oxfordshire"
+        },
+        "country": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-3 code for the country and matches the reference data",
+          "example": "GBR"
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "Postal code for the address",
+          "example": "OX11 2ES"
+        }
+      },
+      "required": [
+        "addressLine1",
+        "city",
+        "postalCode"
+      ]
+    },
+    "Name": {
+      "type": "object",
+      "description": "Re-usable Name type",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "Required if fullName is not used",
+          "example": "John"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Required if fullName is not used",
+          "example": "Smith"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Required if title, firstName, or lastName unused.",
+          "example": "John Smith"
+        },
+        "middleName": {
+          "type": "string",
+          "example": ""
+        },
+        "title": {
+          "type": "string",
+          "description": "A title code from hybris reference data.",
+          "example": "MR"
+        }
+      }
+    },
+    "ChargeType": {
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "amount"
+      ],
+      "description": "This data structure holds different amount applied to the basket. Examples: Fees, promotions, discounts \n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Identifier of the current amount mastered in Hybris (ACP).\n",
+          "example": "CRECARDFEE000000"
+        },
+        "name": {
+          "type": "string",
+          "description": "Business naming of the given charge type.\n",
+          "example": "Credit Card Fee"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Numeric value of the given amount. That value CAN be evaluated accordingly to the percentage field.\n",
+          "example": ""
+        },
+        "percentage": {
+          "type": "number",
+          "format": "double",
+          "description": "Percentage value of the given amount. That value CAN be evaluated accordingly to the value field.\n",
+          "example": "3"
+        },
+        "markupAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Markup amount.\n",
+          "example": "103.00"
+        },
+        "markupPercentage": {
+          "type": "number",
+          "format": "double",
+          "description": "Markup percentage.\n",
+          "example": "10"
+        }
+      }
+    },
+    "TotalPrice": {
+      "type": "object",
+      "description": "Used to represent the combined price without any breakup of taxes, fees and discounts.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Combined price - inclusive of taxes, fees and discounts"
+        },
+        "currencyCode": {
+          "type": "string",
+          "description": "Currency for the amount specified above."
+        }
+      },
+      "required": [
+        "amount",
+        "currencyCode"
+      ]
+    },
+    "CarHire": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Item"
+        },
+        {
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Class/Category the car belongs to provided by teh car hire provider.",
+              "example": "COMPACT"
+            },
+            "rateId": {
+              "type": "string",
+              "description": "Rate id provided by the car hire provider",
+              "example": "MH65437"
+            },
+            "checkInStation": {
+              "$ref": "#/definitions/CarStation"
+            },
+            "checkOutStation": {
+              "$ref": "#/definitions/CarStation"
+            },
+            "checkInDateTime": {
+              "type": "string",
+              "format": "datetime",
+              "description": "Pick up time for the car. ISO 8601 Date Format (YYYY-MM-DDTHH:MM:SS)"
+            },
+            "checkOutDateTime": {
+              "type": "string",
+              "format": "datetime",
+              "description": "Drop off time for the car. ISO 8601 Date Format (YYYY-MM-DDTHH:MM:SS)"
+            },
+            "customerEmail": {
+              "type": "string",
+              "description": "Email address of the customer.",
+              "example": "j.smith@some_email.com"
+            },
+            "customerPhone": {
+              "type": "string",
+              "description": "Phone/Mobile number of the customer.",
+              "example": "020876544"
+            },
+            "primaryDriver": {
+              "$ref": "#/definitions/DriverDetail"
+            },
+            "otherDrivers": {
+              "$ref": "#/definitions/DriverDetail"
+            },
+            "carExtras": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Item"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "DriverDetail": {
+      "type": "object",
+      "properties": {
+        "driverName": {
+          "$ref": "#/definitions/Name"
+        },
+        "age": {
+          "type": "integer",
+          "description": "Age of the driver.",
+          "example": "34"
+        },
+        "countryOfResidence": {
+          "type": "string",
+          "description": "ISO code for the resident country and matches reference data.",
+          "example": "GBR"
+        },
+        "drivingLicenceNumber": {
+          "type": "string",
+          "description": "Driving license number provided by the customer.",
+          "example": "JU987655"
+        },
+        "drivingLicenceIssuingCountry": {
+          "type": "string",
+          "description": "Driving license number provided by the customer.",
+          "example": "GBR"
+        },
+        "drivingLicenceExpiryDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Driving license number provided by the customer. ISO 8601 Date Format (YYYY-MM-DD)."
+        }
+      }
+    },
+    "CarStation": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "emailAddress": {
+          "type": "string",
+          "example": "carstation@some_email.com"
+        },
+        "phone": {
+          "type": "string",
+          "example": "020987666"
+        },
+        "openingTime": {
+          "type": "string",
+          "description": "Opening time of the pick up / drop off location on the pick up / drop off day. Format: HH:MM",
+          "example": "09:00"
+        },
+        "closingTime": {
+          "type": "string",
+          "description": "Closing time of the pick up / drop off location on the pick up / drop off day. Format: HH:MM",
+          "example": "18:00"
+        },
+        "faxNumber": {
+          "type": "string",
+          "description": "Fax number of the pick up / drop off location",
+          "example": "020987666"
+        },
+        "stationCode": {
+          "type": "string",
+          "description": "Identifier for the pick up / drop off location",
+          "example": "STATION_001"
+        },
+        "stationName": {
+          "type": "string",
+          "description": "Name of the pick up / drop off location",
+          "example": "Car Hire Station"
+        }
+      }
+    },
+    "Hotel": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Item"
+        },
+        {
+          "properties": {
+            "hotelAddress": {
+              "$ref": "#/definitions/Address"
+            },
+            "room": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HotelRoom"
+              }
+            },
+            "phone": {
+              "type": "string",
+              "example": "020987666"
+            },
+            "checkInDate": {
+              "type": "string",
+              "format": "date",
+              "description": "Checkin date. ISO 8601 Date Format (YYYY-MM-DD)"
+            },
+            "checkoutDate": {
+              "type": "string",
+              "format": "date",
+              "description": "Checkout date. ISO 8601 Date Format (YYYY-MM-DD)"
+            },
+            "bookingReference": {
+              "type": "string",
+              "description": "Hotel provider booking reference",
+              "example": "HOTEL_8865322"
+            },
+            "leadPassenger": {
+              "type": "string",
+              "description": "The lead passenger code.",
+              "example": "87654325"
+            }
+          }
+        }
+      ]
+    },
+    "HotelRoom": {
+      "type": "object",
+      "description": "Represents the room details",
+      "properties": {
+        "roomType": {
+          "type": "string",
+          "description": "Type of room provided by the hotel provider.",
+          "example": "STANDARD"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "No. of rooms booked by the customer for the given room type.",
+          "example": 1
+        }
+      }
+    },
+    "TravelInsurance": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Item"
+        },
+        {
+          "properties": {
+            "passengerCode": {
+              "type": "string",
+              "description": "Refers to the passenger code in which the travel insurance product belongs to.",
+              "example": "87654325"
+            },
+            "travelType": {
+              "type": "string",
+              "description": "Travel type provided by the insurance provider",
+              "example": "LEISURE"
+            },
+            "originAirport": {
+              "type": "string",
+              "description": "IATA code for the origin airport",
+              "example": "GTW"
+            },
+            "originAirportCountry": {
+              "type": "string",
+              "description": "ISO code for the origin airport country",
+              "example": "GBR"
+            },
+            "destinationAirport": {
+              "type": "string",
+              "description": "IATA code for the destination airport",
+              "example": "BCN"
+            },
+            "destinationAirportCountry": {
+              "type": "string",
+              "description": "ISO code for the destination airport country",
+              "example": "ESP"
+            },
+            "travelInsurancePolicies": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TravelInsurancePolicy"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "TravelInsurancePolicy": {
+      "type": "object",
+      "description": "A policy document on the product",
+      "properties": {
+        "insuredAddress": {
+          "$ref": "#/definitions/Address"
+        },
+        "insuredDOB": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of birth of the policy holder. ISO 8601 Date Format (YYYY-MM-DD)"
+        },
+        "policyType": {
+          "type": "string",
+          "description": "Identifier to represent policy types provided by the insurance provider.",
+          "example": "SINGLE"
+        },
+        "coverageArea": {
+          "type": "string",
+          "description": "Identifier to represent the coverage area provided by the insurance provider.",
+          "example": "EUROPE"
+        },
+        "quotePackId": {
+          "type": "string",
+          "description": "Quote pack provided by the insurance provider",
+          "example": "INS_8765353"
+        },
+        "premiumAmountPaid": {
+          "$ref": "#/definitions/Pricing"
+        }
+      }
+    },
+    "Payment": {
+      "type": "object",
+      "description": "The payment made on the booking. As part of create booking, only successful transactions are sent to EJ systems.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "payment type for the transaction - creditcard,debitcard,voucher,bank-payment,creditfile,cash"
+        },
+        "transactionId": {
+          "type": "string",
+          "description": "Hybris generated transaction id"
+        },
+        "externalReference": {
+          "type": "string",
+          "description": "Payment reference provided by the payment gateway. For non-card payments,this value is generated by hybris."
+        },
+        "transactionType": {
+          "type": "string",
+          "description": "Represents different transaction types - AUTHORIZE, REFUND etc. Added for future use in update booking"
+        },
+        "creditFileReference": {
+          "type": "string",
+          "description": "Credit file number used for payment."
+        },
+        "paymentTypeReference": {
+          "type": "string",
+          "description": "Stores the last 4 digits of the card, voucher code, receipt number"
+        },
+        "comment": {
+          "type": "string",
+          "description": "Comment provided by the agent while capturing payment"
+        },
+        "amount": {
+          "$ref": "#/definitions/TotalPrice"
+        },
+        "exchangeRate": {
+          "type": "number",
+          "format": "double",
+          "description": "Exchange rate if any for the transaction"
+        },
+        "exchangeValue": {
+          "$ref": "#/definitions/TotalPrice"
+        }
+      }
+    },
+    "APIS": {
+      "type": "object",
+      "description": "Advanced Passenger Information",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/Name"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date",
+          "description": "Passenger date of birth. ISO 8601 Date Format (YYYY-MM-DD)"
+        },
+        "documentExpiryDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Expiry date of the travel document. ISO 8601 Date Format (YYYY-MM-DD)"
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Identification number on the travel document",
+          "example": "YT7675433"
+        },
+        "documentType": {
+          "type": "string",
+          "description": "Document type code from hybris reference data.",
+          "example": "PASSPORT"
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "MALE",
+            "FEMALE"
+          ],
+          "description": "Gender code. The value will match the ones provided in reference data."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "Country iso code. The value will match the ones provided in reference data.",
+          "example": "GBR"
+        },
+        "countryOfIssue": {
+          "type": "string",
+          "description": "Country iso code. The value will match the ones provided in reference data.",
+          "example": "GBR"
+        }
+      },
+      "required": [
+        "name",
+        "dateOfBirth",
+        "documentExpiryDate",
+        "documentNumber",
+        "documentType",
+        "gender",
+        "nationality",
+        "countryOfIssue"
+      ]
+    },
+    "Corporate": {
+      "type": "object",
+      "description": "The corporate and deal information linked to the booking",
+      "properties": {
+        "corporateId": {
+          "type": "string",
+          "description": "Id of the corporate customer"
+        },
+        "officeId": {
+          "type": "string",
+          "description": "Office Id associated with the deal apploed on the booking"
+        },
+        "dealId": {
+          "type": "string",
+          "description": "Identifier for the deal applied on the booking"
+        },
+        "discountTier": {
+          "type": "string",
+          "description": "Identifier for discount tier the deal belongs to"
+        },
+        "iataNumber": {
+          "type": "string",
+          "description": "The IATA number associated with the customer"
+        },
+        "ejContact": {
+          "type": "string",
+          "description": "ejContact information stored with the deal"
+        }
+      }
+    },
+    "OtherInfo": {
+      "type": "object",
+      "description": "Other booking information like customer ip address that are captured in the booking",
+      "properties": {
+        "ipAddress": {
+          "type": "string",
+          "description": "Customer IP address provided by the channel"
+        },
+        "device": {
+          "type": "string",
+          "description": "Device used in the booking and is provided by the channel"
+        },
+        "operatingSystem": {
+          "type": "string",
+          "description": "Operating system used in the booking and is provided by the channel"
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "required": [
+        "code",
+        "description"
+      ],
+      "description": "A booking comment instance\n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The comment unique code in hybris (ACP).\n",
+          "example": "00564545"
+        },
+        "description": {
+          "type": "string",
+          "description": "The comment description in hybris (ACP).\n"
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Customer service agent identifier. Mandatory for agent desktop booking\n",
+          "example": "00767554"
+        },
+        "dateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Comment creation date/time. ISO 8601 Date-Time Format (YYYY-MM-DDTHH:MM:SS)\n",
+          "example": "2016-10-27T12:26:00"
+        },
+        "updateAgentId": {
+          "type": "string",
+          "description": "Customer service agent identifier which has made the latest change to the comment. Mandatory for agent desktop booking\n",
+          "example": "00767554"
+        },
+        "updateDateTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Comment update date/time. ISO 8601 Date-Time Format (YYYY-MM-DDTHH:MM:SS)\n",
+          "example": "2016-10-27T12:26:00"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Agent channel responsible for creating the comment.\n",
+          "example": "ADCustomerService"
+        },
+        "commentType": {
+          "type": "string",
+          "description": "The associated comment type as defined in hybris ACP\n",
+          "example": "booking"
+        }
+      }
+    }
+  }
+}

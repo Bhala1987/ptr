@@ -1,0 +1,24 @@
+package com.hybris.easyjet.fixture.hybris.invoke.response.customer.operationconfirmation;
+
+import com.hybris.easyjet.fixture.hybris.invoke.response.common.AbstractConfirmation;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerFlightInterestResponse extends AbstractConfirmation<CustomerFlightInterestResponse.OperationConfirmation> {
+
+    @Getter
+    @Setter
+    public static class OperationConfirmation extends UpdateConfirmationResponse.OperationConfirmation {
+        private List<RegistrationStatus> registrationStatus = new ArrayList<>();
+    }
+
+    @Getter
+    @Setter
+    public static class RegistrationStatus {
+        private String flightKey;
+        private String isRegistered;
+    }
+}

@@ -1,0 +1,974 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "urn:jsonschema:com:ej:customer:CustomerAccountChanged",
+  "type": "object",
+  "properties": {
+    "header": {
+      "$ref": "#/definitions/Header"
+    },
+    "body": {
+      "$ref": "#/definitions/Body"
+    }
+  },
+  "required": [
+    "header",
+    "body"
+  ],
+  "definitions": {
+    "Header": {
+      "type": "object",
+      "description": "See http://conf.europe.easyjet.local/display/EI/Message+Headers",
+      "properties": {
+        "messageName": {
+          "type": "string",
+          "description": "Message Name"
+        },
+        "messageVersion": {
+          "type": "string",
+          "description": "Message Version"
+        },
+        "messageGenerationTimestamp": {
+          "type": "string",
+          "description": "Generated Timestamp, ex. 2016-12-13T12:12:12Z "
+        },
+        "messageProducerName": {
+          "type": "string",
+          "description": "Producer Name"
+        },
+        "operationType": {
+          "type": "string",
+          "description": "Operation Type. Possible value is UPDATE"
+        }
+      },
+      "required": [
+        "messageName",
+        "messageVersion",
+        "messageGenerationTimestamp",
+        "messageProducerName",
+        "operationType"
+      ]
+    },
+    "Body": {
+      "$ref": "#/definitions/CustomerProfile"
+    },
+    "CustomerProfile": {
+      "type": "object",
+      "description": "Object used for customer profile registration details which represents the customer profile details mastered in Hybris (ACP).\n",
+      "required": [
+        "personalDetails",
+        "contactAddress"
+      ],
+      "properties": {
+        "personalDetails": {
+          "$ref": "#/definitions/PersonalDetails"
+        },
+        "contactAddress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Address"
+          }
+        },
+        "savedPayments": {
+          "type": "object",
+          "description": "List of payment methods saved against the Customer profile.\n",
+          "properties": {
+            "savedCards": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SavedPaymentCard"
+              }
+            }
+          }
+        },
+        "savedPassengers": {
+          "type": "array",
+          "description": "List of passengers saved against the Customer profile.\n",
+          "items": {
+            "$ref": "#/definitions/Passenger"
+          }
+        },
+        "recentSearches": {
+          "type": "array",
+          "description": "List of recent searches saved against the Customer profile.\n",
+          "items": {
+            "$ref": "#/definitions/SavedSearch"
+          }
+        },
+        "flightInterests": {
+          "type": "array",
+          "description": "List of flight interests saved against the Customer profile.\n",
+          "items": {
+            "$ref": "#/definitions/Flight"
+          }
+        },
+        "identityDocuments": {
+          "type": "array",
+          "description": "List of documents saved against the Customer profile.\n",
+          "items": {
+            "$ref": "#/definitions/APIS"
+          }
+        },
+        "savedSSRs": {
+          "$ref": "#/definitions/SpecialRequestDetails"
+        },
+        "significantOthers": {
+          "type": "object",
+          "description": "List of significant others saved against the Customer profile.\n",
+          "properties": {
+            "remainingChanges": {
+              "type": "integer",
+              "description": "Number of remaining changes for the period.",
+              "example": "5"
+            },
+            "changesEndDate": {
+              "type": "string",
+              "format": "date",
+              "description": "The remaining changes end of period date. ISO 8601 Date Format (YYYY-MM-DD)\n"
+            },
+            "passengers": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Passenger"
+              }
+            }
+          }
+        },
+        "dependents": {
+          "type": "array",
+          "description": "List of dependents saved against the Customer profile.\n",
+          "items": {
+            "$ref": "#/definitions/Passenger"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of agent comments saved against the Customer profile.\n",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        },
+        "communicationPreferences": {
+          "$ref": "#/definitions/ContactPreference"
+        },
+        "travelPreferences": {
+          "$ref": "#/definitions/TravelPreference"
+        },
+        "ancillaryPreferences": {
+          "$ref": "#/definitions/AncillaryPreference"
+        },
+        "savedInspireMeIdeas": {
+          "type": "array",
+          "description": "List of Inspire Me results saved against the Customer profile.\n",
+          "items": {
+            "$ref": "#/definitions/InspireMeIdea"
+          }
+        },
+        "savedDestinations": {
+          "type": "array",
+          "description": "List of destination URLs saved against the Customer profile.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "savedBasketTrip": {
+          "type": "array",
+          "description": "List of baskets/trips references saved against the Customer profile.\n",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "PersonalDetails": {
+      "type": "object",
+      "required": [
+        "customerId",
+        "email",
+        "type",
+        "title",
+        "firstName",
+        "lastName"
+      ],
+      "description": "Commom object which represents a customer personal details.\n",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "description": "Customer unique identifier (Alphanumeric) maintained in hybris ACP.\n",
+          "example": "MNH123456"
+        },
+        "email": {
+          "type": "string",
+          "description": "A customer unique email address.\n",
+          "example": "john.smith@some_email.com",
+          "maxLength": 60
+        },
+        "status": {
+          "type": "string",
+          "description": "Customer status as defined in hybris reference data.\n",
+          "example": "ACTIVE"
+        },
+        "type": {
+          "type": "string",
+          "description": "Customer's passenger type code as defined in hybris reference data.\n",
+          "example": "adult"
+        },
+        "age": {
+          "type": "integer",
+          "description": "Customer's age provided.\n",
+          "example": 23
+        },
+        "group": {
+          "type": "string",
+          "description": "Customer group as defined in hybris reference data.\n",
+          "example": "CUSTOMER_GROUP"
+        },
+        "title": {
+          "type": "string",
+          "description": "Customer title as defined in hybris reference data.\n",
+          "example": "mr"
+        },
+        "firstName": {
+          "description": "Customer's first name. Must contain a value.\n",
+          "type": "string",
+          "example": "John",
+          "maxLength": 30
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Customer's last name. Must contain a value.\n",
+          "example": "Smith",
+          "maxLength": 50
+        },
+        "ejPlusCardNumber": {
+          "type": "string",
+          "description": "A customer valid EJPlus Card Number\n",
+          "example": "12345678",
+          "maxLength": 8
+        },
+        "nifNumber": {
+          "type": "string",
+          "description": "A Portuguese customer valid NIF number\n",
+          "example": "8767655"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Indicates customer phone number.\n",
+          "example": "7740123854",
+          "maxLength": 18
+        },
+        "alternativePhoneNumber": {
+          "type": "string",
+          "description": "Indicates customer alternative phone number.\n",
+          "example": "0200123821",
+          "maxLength": 18
+        },
+        "flightClubId": {
+          "type": "string",
+          "description": "A customer valid Flight Club Number\n",
+          "example": "543443"
+        },
+        "flightClubExpiryDate": {
+          "type": "string",
+          "format": "date",
+          "description": "A customer Flight Club expiry date. ISO 8601 Date Format (YYYY-MM-DD)\n"
+        },
+        "employeeId": {
+          "type": "string",
+          "description": "A customer employee ID. Only applicable to staff customers.\n",
+          "example": "645444"
+        },
+        "employeeEmail": {
+          "type": "string",
+          "description": "A customer employee Email. Only applicable to staff customers.\n",
+          "example": "j.smith@easyjet.com",
+          "maxLength": 60
+        },
+        "keyDates": {
+          "type": "array",
+          "description": "List of Customer provided key dates.\n",
+          "items": {
+            "$ref": "#/definitions/KeyDate"
+          }
+        }
+      }
+    },
+    "KeyDate": {
+      "type": "object",
+      "required": [
+        "type",
+        "month",
+        "day"
+      ],
+      "description": "Represents a Customer key date\n",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "A key date type code\n",
+          "example": "graduation"
+        },
+        "month": {
+          "$ref": "#/definitions/Month"
+        },
+        "day": {
+          "type": "string",
+          "description": "A valid given day.\n",
+          "example": 10
+        }
+      }
+    },
+    "Month": {
+      "type": "string",
+      "description": "A month enumeration object.",
+      "enum": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12"
+      ]
+    },
+    "Address": {
+      "type": "object",
+      "description": "Represents a complete address location.\n",
+      "properties": {
+        "addressLine1": {
+          "type": "string",
+          "description": "The address line 1\n",
+          "example": "52, Main Street",
+          "maxLength": 50
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "The address line 2\n",
+          "example": "Flat 2B",
+          "maxLength": 50
+        },
+        "addressLine3": {
+          "type": "string",
+          "description": "The address line 3\n",
+          "example": "",
+          "maxLength": 50
+        },
+        "city": {
+          "type": "string",
+          "description": "City or town for the address",
+          "example": "Oxford",
+          "maxLength": 50
+        },
+        "county_state": {
+          "type": "string",
+          "description": "County or State for the address",
+          "example": "Oxfordshire",
+          "maxLength": 50
+        },
+        "country": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-3 code for the country and matches the reference data",
+          "example": "GBR"
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "Postal code for the address",
+          "example": "OX11 2ES",
+          "maxLength": 15
+        }
+      },
+      "required": [
+        "addressLine1",
+        "addressLine2",
+        "city",
+        "postalCode"
+      ]
+    },
+    "SavedPaymentCard": {
+      "type": "object",
+      "description": "Customer saved payment card.\n",
+      "required": [
+        "code",
+        "type",
+        "default",
+        "validToMonth",
+        "validToYear",
+        "validFromMonth",
+        "validFromYear",
+        "lastFourDigits"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Card payment unique code.\n",
+          "example": "6755452"
+        },
+        "type": {
+          "type": "string",
+          "description": "Payment card type.\n",
+          "example": "CARD"
+        },
+        "default": {
+          "type": "boolean",
+          "description": "Identifies whether the payment card is the default.\n",
+          "example": true
+        },
+        "validToMonth": {
+          "$ref": "#/definitions/Month"
+        },
+        "validToYear": {
+          "type": "string",
+          "description": "Payment card valid to year.\n",
+          "example": "2018"
+        },
+        "validFromMonth": {
+          "$ref": "#/definitions/Month"
+        },
+        "validFromYear": {
+          "type": "string",
+          "description": "Payment card valid from year.\n",
+          "example": "2015"
+        },
+        "lastFourDigits": {
+          "type": "string",
+          "description": "Payment card last four digits.\n",
+          "example": "6532"
+        }
+      }
+    },
+    "Passenger": {
+      "type": "object",
+      "description": "Customer saved passenger.\n",
+      "required": [
+        "code",
+        "type",
+        "title",
+        "firstName",
+        "lastName"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Passenger unique identifier.\n",
+          "example": "767564"
+        },
+        "type": {
+          "type": "string",
+          "description": "Passenger's type code.\n",
+          "example": "adult"
+        },
+        "title": {
+          "type": "string",
+          "description": "Passenger's title code.\n",
+          "example": "mr"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "Passenger's first name.\n",
+          "example": "Mary"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Passenger's last name.\n",
+          "example": "Smith"
+        },
+        "email": {
+          "type": "string",
+          "description": "Passenger's email address.\n",
+          "example": "mary.smith@some_email.com"
+        },
+        "ejPlusCardNumber": {
+          "type": "string",
+          "description": "A passenger valid EJPlus Card Number\n",
+          "example": "8776665"
+        },
+        "nifNumber": {
+          "type": "string",
+          "description": "A Portuguese passenger NIF number\n",
+          "example": "8767655"
+        },
+        "flightClubId": {
+          "type": "string",
+          "description": "A passenger valid Flight Club Number\n",
+          "example": "1234455"
+        },
+        "flightClubExpiryDate": {
+          "type": "string",
+          "format": "date",
+          "description": "A passenger Flight Club expiry date. ISO 8601 Date Format (YYYY-MM-DD)\n"
+        },
+        "identityDocuments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/APIS"
+          }
+        },
+        "savedSSRs": {
+          "$ref": "#/definitions/SpecialRequestDetails"
+        }
+      }
+    },
+    "SavedSearch": {
+      "type": "object",
+      "required": [
+        "outbound",
+        "inbound",
+        "passengerMix"
+      ],
+      "properties": {
+        "outbound": {
+          "$ref": "#/definitions/AirportDetails"
+        },
+        "inbound": {
+          "$ref": "#/definitions/AirportDetails"
+        },
+        "passengerMix": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PassengerSearch"
+          }
+        }
+      }
+    },
+    "AirportDetails": {
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "marketGroup",
+        "terminal"
+      ],
+      "description": "Airport repsentation that holds airport details.\n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Airport IATA (International Air Transport Association) identifier.\n",
+          "example": "LTN"
+        },
+        "name": {
+          "type": "string",
+          "description": "Airport name to be displayed.\n",
+          "example": "Luton Airport"
+        },
+        "marketGroup": {
+          "type": "string",
+          "description": "Airport market group code. It indicates airport location.\n",
+          "example": "london"
+        },
+        "terminal": {
+          "type": "string",
+          "description": "Airport terminal code in which the related flight is scheduled.\n",
+          "example": "T1"
+        }
+      }
+    },
+    "PassengerSearch": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The passenger type code.\n",
+          "example": "adult"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "The passenger type quantity.\n",
+          "example": 2
+        }
+      }
+    },
+    "APIS": {
+      "type": "object",
+      "description": "Advanced Passenger Information",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/Name"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of birth of the passenger. ISO 8601 Date Format (YYYY-MM-DD)"
+        },
+        "documentExpiryDate": {
+          "type": "string",
+          "format": "ISO 8601 Date Format (YYYY-MM-DD)",
+          "description": "Expiry date of the tarvel document"
+        },
+        "documentNumber": {
+          "type": "string",
+          "description": "Identification number on the travel document",
+          "example": "163563454"
+        },
+        "documentType": {
+          "type": "string",
+          "description": "Document type code. The value will match the ones provided in reference data.",
+          "example": "passport"
+        },
+        "gender": {
+          "type": "string",
+          "description": "Gender code. The value will match the ones provided in reference data.",
+          "example": "male"
+        },
+        "nationality": {
+          "type": "string",
+          "description": "Country iso code. The value will match the ones provided in reference data.",
+          "example": "GBR"
+        },
+        "countryOfIssue": {
+          "type": "string",
+          "description": "Country iso code. The value will match the ones provided in reference data.",
+          "example": "GBR"
+        }
+      },
+      "required": [
+        "name",
+        "dateOfBirth",
+        "documentExpiryDate",
+        "documentNumber",
+        "documentType",
+        "gender",
+        "nationality",
+        "countryOfIssue"
+      ]
+    },
+    "Name": {
+      "type": "object",
+      "description": "Re-usable Name type",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "Required if fullName is not used",
+          "example": "John"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Required if fullName is not used",
+          "example": "Smith"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Required if title, firstName, or lastName unused.",
+          "example": "John Smith"
+        },
+        "middleName": {
+          "type": "string",
+          "example": ""
+        },
+        "title": {
+          "type": "string",
+          "description": "Required if full name is not used",
+          "example": "mr"
+        }
+      }
+    },
+    "SpecialRequestDetails": {
+      "type": "object",
+      "required": [
+        "ssrs"
+      ],
+      "description": "Special Serivces requested by a Passenger\n",
+      "properties": {
+        "ssrs": {
+          "type": "array",
+          "description": "List of special service codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remarks": {
+          "type": "array",
+          "description": "List of special service remarks\n",
+          "items": {
+            "$ref": "#/definitions/Remark"
+          }
+        }
+      }
+    },
+    "Remark": {
+      "type": "object",
+      "required": [
+        "code",
+        "description"
+      ],
+      "description": "Special Service remarks\n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The special service remark unique code in hybris (ACP).\n",
+          "example": "00564545"
+        },
+        "description": {
+          "type": "string",
+          "description": "The special service remarks content in hybris (ACP).\n",
+          "example": "Allergic to nuts"
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "required": [
+        "code",
+        "description"
+      ],
+      "description": "Customer existing comments\n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The comment unique code in hybris (ACP).\n",
+          "example": "00564545"
+        },
+        "description": {
+          "type": "string",
+          "description": "The comment description in hybris (ACP).\n",
+          "example": "Customer complained about onboard service..."
+        }
+      }
+    },
+    "ContactPreference": {
+      "type": "object",
+      "description": "Customer communication preferences.\n",
+      "properties": {
+        "optedOutMarketing": {
+          "type": "array",
+          "description": "List of opted out marketing comms codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "optedOutPeriod": {
+          "$ref": "#/definitions/DatePeriod"
+        },
+        "contactMethods": {
+          "type": "array",
+          "description": "List of selected contact method codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contactTypes": {
+          "type": "array",
+          "description": "List of selected contact type codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "frequency": {
+          "type": "string",
+          "description": "Enum representing the preferred comms frequency code.\n",
+          "example": "daily"
+        }
+      }
+    },
+    "DatePeriod": {
+      "type": "object",
+      "required": [
+        "fromDate",
+        "toDate"
+      ],
+      "description": "A date period object.\n",
+      "properties": {
+        "fromDate": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 Date Format (YYYY-MM-DD)"
+        },
+        "toDate": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 Date Format (YYYY-MM-DD)"
+        }
+      }
+    },
+    "TravelPreference": {
+      "type": "object",
+      "description": "Travel preferences extracted from Customer profile\n",
+      "properties": {
+        "preferredAirports": {
+          "type": "array",
+          "description": "List of preferred airport codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "travellingTo": {
+          "type": "array",
+          "description": "List of preferred airport destination codes.\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tripTypes": {
+          "type": "array",
+          "description": "List of preferred trip type codes. Example: Culture\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "travellingWhen": {
+          "type": "array",
+          "description": "List of expected travel period codes. Example: Within next month\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "travellingWith": {
+          "type": "array",
+          "description": "List of preferred travelling with option codes. Example: Couple\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "travellingSeason": {
+          "type": "string",
+          "description": "A preferred travelling season code. Example: Summer\n"
+        },
+        "travellingPeriod": {
+          "$ref": "#/definitions/DatePeriod"
+        }
+      }
+    },
+    "AncillaryPreference": {
+      "type": "object",
+      "description": "Customer ancillaries preferences.\n",
+      "properties": {
+        "seatingPreferences": {
+          "type": "array",
+          "description": "List of preferred seating option codes. Example: Window\n",
+          "items": {
+            "type": "string"
+          }
+        },
+        "seatNumber": {
+          "type": "string",
+          "description": "A preferred seat number.\n",
+          "example": "1A"
+        },
+        "holdBagQuantity": {
+          "type": "integer",
+          "description": "A preferred quantity of hold bags.\n",
+          "example": "2"
+        },
+        "holdBagWeight": {
+          "type": "string",
+          "description": "A preferred hold bag weight code.\n",
+          "example": "23KG"
+        }
+      }
+    },
+    "Flight": {
+      "type": "object",
+      "required": [
+        "flightKey",
+        "flightNumber",
+        "carrier",
+        "departureDateTime",
+        "arrivalDateTime",
+        "sector",
+        "fareTypes"
+      ],
+      "properties": {
+        "flightKey": {
+          "type": "string",
+          "description": "Unique identifier for the flight flying at specific time.\n",
+          "example": "20121024LISFNC7609"
+        },
+        "flightNumber": {
+          "type": "string",
+          "description": "Flight identifier.\n",
+          "example": "EZY1244"
+        },
+        "carrier": {
+          "type": "string",
+          "description": "Identifier of the travel company who provides the flight.\n",
+          "example": "EZY"
+        },
+        "departureDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Indicates when a flight is going to leave the departure airport.\n"
+        },
+        "arrivalDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Indicates when a flight is going to reach the arrival airport.\n"
+        },
+        "sector": {
+          "$ref": "#/definitions/Sector"
+        },
+        "fareTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FareType"
+          }
+        }
+      }
+    },
+    "FareType": {
+      "type": "object",
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "FareType identifier.\n",
+          "example": "FLEXI"
+        }
+      }
+    },
+    "Sector": {
+      "type": "object",
+      "required": [
+        "code",
+        "departure",
+        "arrival"
+      ],
+      "description": "A sector represents the smallest segment of a journey. A sector is described by two airports.\n",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Sector unique identifier.\n",
+          "example": "LTNBCN"
+        },
+        "departure": {
+          "$ref": "#/definitions/AirportDetails"
+        },
+        "arrival": {
+          "$ref": "#/definitions/AirportDetails"
+        }
+      }
+    },
+    "InspireMeIdea": {
+      "type": "object",
+      "required": [
+        "currency",
+        "price",
+        "outbound",
+        "inbound"
+      ],
+      "description": "An Inspire Me search result object.\n",
+      "properties": {
+        "currency": {
+          "type": "string",
+          "description": "Returned search ISO code currency.\n",
+          "example": "GBP"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Returned search price.\n",
+          "example": "123.45"
+        },
+        "outbound": {
+          "$ref": "#/definitions/Flight"
+        },
+        "inbound": {
+          "$ref": "#/definitions/Flight"
+        }
+      }
+    }
+  }
+}

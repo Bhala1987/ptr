@@ -1,0 +1,30 @@
+#parse("/array.java.vm")
+#if ($packageName)
+package $packageName;
+
+#end
+import com.hybris.easyjet.TestApplication;
+import cucumber.api.CucumberOptions;
+import net.serenitybdd.cucumber.CucumberWithSerenity;
+import net.serenitybdd.junit.spring.integration.SpringIntegrationMethodRule;
+import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import org.junit.Rule;
+import org.junit.runner.RunWith;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Scope;
+
+
+@RunWith(CucumberWithSerenity.class)
+@ContextConfiguration(classes = TestApplication.class)
+@CucumberOptions(
+strict = $strict,
+features = {"$featureFile"},
+##plugin = #stringArray($plugins),
+monochrome = $monochrome,
+tags = {"~@local ~@manual ~@pending"},
+glue = #stringArray($glue))
+public class $className {
+@Rule
+public SpringIntegrationMethodRule springIntegration = new SpringIntegrationMethodRule();
+}
